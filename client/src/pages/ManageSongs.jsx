@@ -277,6 +277,7 @@ const emptyEdit = {
   album: '',
   duration: '',
   genre: '',
+  lyrics: '',
 }
 
 const emptyAlbumForm = {
@@ -361,6 +362,7 @@ export default function ManageSongs() {
       album: song.album || '',
       duration: song.duration || '',
       genre: song.genre || '',
+      lyrics: song.lyrics || '',
     })
     setMessage({ text: '', type: '' })
   }
@@ -769,6 +771,25 @@ export default function ManageSongs() {
                           <div style={{ ...styles.field, ...styles.full }}>
                             <label style={styles.label}>Genre</label>
                             <input style={styles.input} value={editForm.genre} onChange={(event) => setEditForm((prev) => ({ ...prev, genre: event.target.value }))} />
+                          </div>
+                          <div style={{ ...styles.field, ...styles.full }}>
+                            <label style={styles.label}>Lyrics</label>
+                            <textarea
+                              style={{
+                                ...styles.input,
+                                minHeight: '150px',
+                                resize: 'vertical',
+                                lineHeight: 1.6,
+                              }}
+                              value={editForm.lyrics || ''}
+                              placeholder={`Optional lyrics:\n[00:00] First line\n[00:08] Second line`}
+                              onChange={(event) =>
+                                setEditForm((prev) => ({
+                                  ...prev,
+                                  lyrics: event.target.value,
+                                }))
+                              }
+                            />
                           </div>
                         </div>
                       ) : null}
