@@ -15,6 +15,8 @@ const allowedOrigins = [
   'http://127.0.0.1:5173',
   'http://localhost:4173',
   'http://127.0.0.1:4173',
+  "symponify-8tga-git-main-ius-dev.vercel.app",
+  "symponify-8tga-1p6dr8f2h-ius-dev.vercel.app",
   'https://symponify-8tga.vercel.app',
   'https://symponify.vercel.app',
   ...(process.env.CLIENT_ORIGIN || '')
