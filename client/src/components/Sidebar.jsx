@@ -1,9 +1,14 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { usePlayer } from '../context/PlayerContext'
 import useViewport from '../hooks/useViewport'
 
 const Icon = ({ name, size = 20, style: extraStyle }) => (
-  <span className="material-symbols-rounded" style={{ fontSize: size, lineHeight: 1, ...extraStyle }}>{name}</span>
+  <span
+    className="material-symbols-rounded"
+    style={{ fontSize: size, lineHeight: 1, ...extraStyle }}
+  >
+    {name}
+  </span>
 )
 
 const styles = {
@@ -53,6 +58,16 @@ const styles = {
     borderRadius: '18px',
     color: 'var(--text-2)',
     fontWeight: 600,
+    transition: 'all 0.2s ease',
+  },
+  adminLink: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '12px',
+    padding: '14px 16px',
+    borderRadius: '999px',
+    color: 'var(--text-2)',
+    fontWeight: 700,
     transition: 'all 0.2s ease',
   },
   cta: {
@@ -115,7 +130,6 @@ const styles = {
 }
 
 export default function Sidebar({ isCompact = false, isOpen = false, onClose }) {
-  const navigate = useNavigate()
   const { user } = usePlayer()
   const { isMobile, isTabletOrBelow, isWide } = useViewport()
   const isGuest = localStorage.getItem('guestAccess') === 'true'
@@ -132,7 +146,6 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
     localStorage.removeItem('user')
     localStorage.removeItem('guestAccess')
     window.dispatchEvent(new Event('authchange'))
-    // Redirect to landing page instead of login
     window.location.href = '/'
     onClose?.()
   }
@@ -156,6 +169,23 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
     width: isCompact ? 'min(320px, calc(100vw - 24px))' : isWide ? '320px' : 'auto',
   }
 
+  const getMainLinkStyle = (isActive) => ({
+    ...styles.link,
+    background: isActive ? 'var(--active-bg)' : 'transparent',
+    color: isActive ? 'var(--active-text)' : 'var(--text-2)',
+    border: isActive ? '1px solid rgba(255, 122, 0, 0.26)' : '1px solid transparent',
+    boxShadow: isActive ? '0 12px 28px rgba(255, 85, 0, 0.16)' : 'none',
+  })
+
+  const getAdminLinkStyle = (isActive, hasTopMargin = false) => ({
+    ...styles.adminLink,
+    marginTop: hasTopMargin ? '4px' : 0,
+    background: isActive ? 'var(--active-bg)' : 'transparent',
+    color: isActive ? 'var(--active-text)' : 'var(--text-2)',
+    border: isActive ? '1px solid rgba(255, 122, 0, 0.26)' : '1px solid var(--line)',
+    boxShadow: isActive ? '0 12px 28px rgba(255, 85, 0, 0.16)' : 'none',
+  })
+
   return (
     <aside style={sidebarStyle} aria-hidden={isCompact ? !isOpen : false}>
       <div style={styles.topRow}>
@@ -163,6 +193,7 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
           <span style={styles.dot} />
           Symponify
         </div>
+
         {isCompact ? (
           <button type="button" style={styles.closeButton} aria-label="Close menu" onClick={onClose}>
             <Icon name="close" size={20} />
@@ -179,6 +210,7 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
 
       <div style={styles.section}>
         <span style={styles.sectionLabel}>Browse</span>
+
         {links.map(({ to, label, iconName, end }) => (
           <NavLink
             key={to}
@@ -187,18 +219,13 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
             onClick={() => {
               if (isCompact) onClose?.()
             }}
-            style={({ isActive }) => ({
-              ...styles.link,
-              background: isActive ? 'var(--active-bg)' : 'transparent',
-              color: isActive ? 'var(--active-text)' : 'var(--text-2)',
-              border: isActive ? '1px solid rgba(255, 122, 0, 0.26)' : '1px solid transparent',
-              boxShadow: isActive ? '0 12px 28px rgba(255, 85, 0, 0.16)' : 'none',
-            })}
+            style={({ isActive }) => getMainLinkStyle(isActive)}
           >
             <Icon name={iconName} size={18} />
-            {label}
+            <span>{label}</span>
           </NavLink>
         ))}
+
         {user?.isAdmin ? (
           <>
             <NavLink
@@ -206,35 +233,21 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
               onClick={() => {
                 if (isCompact) onClose?.()
               }}
-              style={({ isActive }) => ({
-                ...styles.link,
-                marginTop: '4px',
-                background: isActive ? 'var(--active-bg)' : 'var(--surface-elevated)',
-                color: 'var(--text)',
-                border: '1px solid var(--line-strong)',
-                boxShadow: isActive ? '0 12px 28px rgba(255, 85, 0, 0.16)' : 'none',
-                borderRadius: '999px',
-              })}
+              style={({ isActive }) => getAdminLinkStyle(isActive, true)}
             >
               <Icon name="add_circle" size={18} />
-              Add Song
+              <span>Add Song</span>
             </NavLink>
+
             <NavLink
               to="/home/manage-songs"
               onClick={() => {
                 if (isCompact) onClose?.()
               }}
-              style={({ isActive }) => ({
-                ...styles.link,
-                background: isActive ? 'var(--active-bg)' : 'var(--surface-elevated)',
-                color: 'var(--text)',
-                border: '1px solid var(--line-strong)',
-                boxShadow: isActive ? '0 12px 28px rgba(255, 85, 0, 0.16)' : 'none',
-                borderRadius: '999px',
-              })}
+              style={({ isActive }) => getAdminLinkStyle(isActive)}
             >
               <Icon name="edit_note" size={18} />
-              Manage Songs
+              <span>Manage Songs</span>
             </NavLink>
           </>
         ) : null}
@@ -243,8 +256,14 @@ export default function Sidebar({ isCompact = false, isOpen = false, onClose }) 
       {!isCompact || isGuest ? (
         <div style={styles.cta}>
           <div style={styles.ctaTitle}>Curated daily</div>
-          <p style={styles.ctaText}>A bright mix of synth, soul, and intimate acoustic sessions picked for you.</p>
-          <button style={{ ...styles.ctaButton, width: isMobile ? '100%' : 'auto' }} onClick={logout}>
+          <p style={styles.ctaText}>
+            A bright mix of synth, soul, and intimate acoustic sessions picked for you.
+          </p>
+
+          <button
+            style={{ ...styles.ctaButton, width: isMobile ? '100%' : 'auto' }}
+            onClick={logout}
+          >
             <Icon name="logout" size={16} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
             {isGuest ? 'Exit Guest Mode' : 'Logout'}
           </button>
