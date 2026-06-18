@@ -1,18 +1,53 @@
 import React, { useEffect, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { usePlayer } from '../context/PlayerContext'
-import { mockLyrics } from '../lib/mockLyrics'
 import CoverArt from '../components/CoverArt'
+
+
+const parseLyrics = (song) => {
+  const rawLyrics = song?.lyrics || ''
+
+  if (!rawLyrics.trim()) {
+    return [{ time: null, text: 'Lyrics not available for this song.' }]
+  }
+
+  return rawLyrics
+    .split('\n')
+    .map((line) => {
+      const trimmed = line.trim()
+      if (!trimmed) return null
+
+      const match = trimmed.match(/^\[(\d{1,2}):(\d{2})(?:\.(\d{1,3}))?\]\s*(.*)$/)
+
+      if (match) {
+        const minutes = Number(match[1])
+        const seconds = Number(match[2])
+        const millis = Number(match[3] || 0)
+        return {
+          time: minutes * 60 + seconds + millis / 1000,
+          text: match[4] || '...',
+        }
+      }
+
+      return { time: null, text: trimmed }
+    })
+    .filter(Boolean)
+}
 
 export default function Lyrics() {
   const { currentTrack, isPlaying, progress } = usePlayer()
   const scrollRef = useRef(null)
-  
+
   // Find current active lyric line
-  const activeLineIndex = mockLyrics.reduce((acc, lyric, index) => {
-    if (progress >= lyric.time) return index
-    return acc
-  }, 0)
+  const lyrics = parseLyrics(currentTrack)
+  const hasTimedLyrics = lyrics.some((line) => Number.isFinite(line.time))
+
+  const activeLineIndex = hasTimedLyrics
+    ? lyrics.reduce((acc, lyric, index) => {
+      if (Number.isFinite(lyric.time) && progress >= lyric.time) return index
+      return acc
+    }, 0)
+    : -1
 
   useEffect(() => {
     // Scroll active line into view smoothly
@@ -56,9 +91,9 @@ export default function Lyrics() {
         </div>
 
         <div style={styles.lyricsContainer} ref={scrollRef} className="scrollbar-hidden">
-          {mockLyrics.map((lyric, index) => {
-            const isActive = index === activeLineIndex
-            const isPassed = index < activeLineIndex
+          {lyrics.map((lyric, index) => {
+            const isActive = hasTimedLyrics && index === activeLineIndex
+            const isPassed = hasTimedLyrics && index < activeLineIndex
 
             return (
               <motion.div

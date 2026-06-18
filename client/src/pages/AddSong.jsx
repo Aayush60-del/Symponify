@@ -11,6 +11,7 @@ const initialForm = {
   album: '',
   duration: '',
   genre: '',
+  lyrics: '',
   emoji: '\uD83C\uDFB5',
   color: 'linear-gradient(135deg,#FF5C35,#F0A500)',
 }
@@ -314,7 +315,7 @@ export default function AddSong() {
         setAlbumsLoading(false)
       }
     }
-    
+
     loadAlbums()
   }, [showError])
 
@@ -456,6 +457,7 @@ export default function AddSong() {
     formData.append('album', finalAlbum)
     formData.append('duration', form.duration)
     formData.append('genre', form.genre)
+    formData.append('lyrics', form.lyrics)
     formData.append('emoji', form.emoji)
     formData.append('color', form.color)
     formData.append('audio', audioFile)
@@ -638,6 +640,23 @@ export default function AddSong() {
               ))}
             </select>
           </div>
+
+          <div style={{ ...styles.field, gridColumn: '1 / -1' }}>
+            <label style={styles.label}>Lyrics</label>
+            <textarea
+              style={{
+                ...styles.input,
+                minHeight: '160px',
+                resize: 'vertical',
+                lineHeight: 1.6,
+              }}
+              name="lyrics"
+              placeholder={`Optional lyrics. You can use plain lines or synced format:\n[00:00] First line\n[00:08] Second line`}
+              value={form.lyrics}
+              onChange={handleChange}
+            />
+          </div>
+
           <div style={styles.field}>
             <label style={styles.label}>Add To Existing Album</label>
             <select

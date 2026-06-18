@@ -28,6 +28,7 @@ const normalizeSongInput = (body = {}) => ({
   album: safeTrim(body.album),
   duration: safeTrim(body.duration),
   genre: safeTrim(body.genre),
+  lyrics: safeTrim(body.lyrics),
   emoji: safeTrim(body.emoji) || '\uD83C\uDFB5',
   color: safeTrim(body.color) || 'linear-gradient(135deg, #333, #666)',
 })
@@ -445,6 +446,7 @@ router.put('/:id', authMiddleware, async (req, res) => {
     song.album = payload.album
     song.duration = payload.duration
     song.genre = payload.genre
+    song.lyrics = payload.lyrics
     song.emoji = payload.emoji
     song.color = payload.color
 

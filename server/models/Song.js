@@ -14,6 +14,7 @@ const SongSchema = new mongoose.Schema(
     emoji: { type: String, default: '\uD83C\uDFB5' },
     color: { type: String, default: 'linear-gradient(135deg, #333, #666)' },
     likes: { type: Number, default: 0, min: 0 },
+    lyrics: { type: String, default: '' },
   },
   {
     timestamps: true,
