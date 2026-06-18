@@ -21,7 +21,7 @@ export default function useViewport() {
     isTablet: width > 480 && width <= 768,
     isTabletOrBelow: width <= 768,
     isSmallLaptop: width > 768 && width <= 1024,
-    isCompact: width <= 1024,
+    isCompact: width <= 768,
     isDesktop: width > 1024 && width < 1440,
     isLargeScreen: width >= 1025,
     isWide: width >= 1440,

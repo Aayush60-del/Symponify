@@ -21,7 +21,7 @@ const styles = {
     gridTemplateColumns: '260px minmax(0, 1fr) 180px',
     alignItems: 'center',
     gap: '20px',
-    padding: '18px 24px',
+    padding: '12px 20px',
     borderRadius: '28px',
     background: 'var(--player-bg)',
     border: '1px solid var(--line)',
@@ -110,7 +110,7 @@ const styles = {
   progressRange: {
     '--progress': '0%',
     width: '100%',
-    height: '12px',
+    height: '8px',
     borderRadius: '999px',
     outline: 'none',
     background: 'linear-gradient(to right, var(--accent) 0%, var(--accent-2) var(--progress), var(--surface-3) var(--progress), var(--surface-3) 100%)',

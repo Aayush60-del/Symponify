@@ -316,9 +316,6 @@ export default function Home() {
               <Icon name="graphic_eq" size={16} /> Live soundspace
             </span>
             <h1 style={styles.heroTitle}>{getGreeting()}, ready for a better mix?</h1>
-            <p style={styles.heroCopy}>
-              Explore a polished music dashboard with smooth playback, curated albums, responsive visuals, and a cleaner premium interface powered by Framer Motion + GSAP.
-            </p>
             <div style={{ ...styles.statGrid, gridTemplateColumns: isMobile ? '1fr' : styles.statGrid.gridTemplateColumns }}>
               {heroStats.map((stat) => (
                 <div key={stat.label} className="stat-pill" style={styles.stat}>
